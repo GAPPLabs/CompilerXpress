@@ -1,4 +1,4 @@
-package com.gapplabs.structure;
+package com.gapplabs.model.dataStructure;
 
 public class Errors extends Common {
   

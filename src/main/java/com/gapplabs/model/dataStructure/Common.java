@@ -1,4 +1,4 @@
-package com.gapplabs.structure;
+package com.gapplabs.model.dataStructure;
 
 import java.util.ArrayList;
 import java.util.HashMap;
