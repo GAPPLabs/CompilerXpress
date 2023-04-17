@@ -1,8 +1,5 @@
 package com.gapplabs.structure;
 
-import java.util.List;
-import java.util.Map;
-
 public class Errors extends Common {
   
   private final static String [] nameData = {"lexema", "token", "linea", "descripcion"};
