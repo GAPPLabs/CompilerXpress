@@ -15,11 +15,15 @@ public class Errors extends Common {
       return true;
     } else {
       int index = this.getIndexData(lexema, "lexema");
-      String lineBefore = this.getData(index, "linea").get("linea");
+      String lineBefore = this.getData(index, "linea");
       this.updateData(this.createMapData(new String [] {"linea"}, 
               checkLine(linea, lineBefore)), index);
       return false;
     }
+  }
+  
+  public String createToken() {
+    return "ERL" + (this.getSize() + 1);
   }
   
   private String checkLine (String line, String lineBefore) {        

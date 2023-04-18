@@ -28,6 +28,10 @@ public class Common {
     size ++;
   }
   
+  public String getData(int index, String nameData) {
+    return structure.get(nameData).get(index);
+  }
+  
   public Map<String, String> getData(int index, String... nameData) {
     Map<String, String> data = new HashMap<>();
     for (String key : nameData) {
@@ -59,6 +63,23 @@ public class Common {
       map.put(nameData[i], data[i]);
     });
     return map;
+  }
+  
+  public void printData() {
+    int numRows = structure.values().stream().mapToInt(List::size).max().orElse(0);
+    for (String key : structure.keySet()) {
+    System.out.print(key + ": ");
+    List<String> column = structure.get(key);
+    // Iterar por cada fila de la columna y obtener el valor o una cadena vacía si la fila no tiene valores
+    for (int row = 0; row < numRows; row++) {
+        String value = "";
+        if (row < column.size()) {
+            value = column.get(row);
+        }
+        System.out.print(value + "\t");
+    }
+    System.out.println();
+}
   }
   
   public int getIndexData(String data, String nameData) {
