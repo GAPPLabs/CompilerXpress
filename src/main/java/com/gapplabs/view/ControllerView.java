@@ -4,9 +4,9 @@ import java.awt.event.ActionEvent;
 
 public class ControllerView {
   
-  private final ViewMain view;
+  private final MainView view;
 
-  public ControllerView(ViewMain view) {
+  public ControllerView(MainView view) {
     this.view = view;
     setEvents();
   }
