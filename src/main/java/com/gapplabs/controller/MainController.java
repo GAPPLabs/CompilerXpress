@@ -9,7 +9,7 @@ import java.awt.event.ActionListener;
 
 public class MainController implements ActionListener {
     private MainView mainView;
-    private  WordAnalysis wordAnalysis;
+    private WordAnalysis wordAnalysis;
 
     public MainController(MainView mainView, WordAnalysis wordAnalysis) {
         System.out.println("arrranca el maincontroller");

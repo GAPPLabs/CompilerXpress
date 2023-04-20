@@ -10,8 +10,8 @@ public class App {
             public void run() {
                 WordAnalysis wordAnalysis = new WordAnalysis();
                 MainView view = new MainView();
-//              ControllerView controller = new ControllerView(view);
-              MainController mainController = new MainController(view, wordAnalysis );
+                // ControllerView controller = new ControllerView(view);
+                MainController mainController = new MainController(view, wordAnalysis );
                 view.setVisible(true);
             }
         });

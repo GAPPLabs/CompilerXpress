@@ -82,16 +82,13 @@ public class WordAnalysis {
     }
 
     public static void main(String[] args) {
-//    String text = "Hola como estas = \t como = + car_ads - ISC123R";
-//    WordAnalysis a = new WordAnalysis();
-//    ArrayList<String []> te = a.extractWords(text);
-//    for (int i = 0; i < te.size(); i++) {
-//      System.out.println(i + " - " + Arrays.toString(te.get(i)));
-    }
+      String text = "Hola como estas = \t como = + car_ads - ISC123R";
+      WordAnalysis a = new WordAnalysis();
+      a.compile(text);
 
-//    a.lexicalAnalysis(te);
-//    a.simbols.printData();
-//    a.erros.printData();
-//    a.expressions.printData();
-//    a.tokens.printData();
+      a.simbols.printData();
+      a.erros.printData();
+      a.expressions.printData();
+      a.tokens.printData();
+  }
 }
