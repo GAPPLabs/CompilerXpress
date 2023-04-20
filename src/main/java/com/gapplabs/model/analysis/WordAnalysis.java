@@ -15,12 +15,14 @@ public class WordAnalysis {
   private Errors erros;
   private Expressions expressions;
   private Tokens tokens;
+  private SemanticAnalysis semantic;
 
   public WordAnalysis() {
     simbols = new Simbols();
     erros = new Errors();
     expressions = new Expressions();
     tokens = new Tokens();
+    semantic = new SemanticAnalysis(simbols);
   }
   
   public ArrayList<String []> getWords(String text) {
@@ -45,11 +47,12 @@ public class WordAnalysis {
               token = expressions.createToken(expression);
               if (simbols.registerSimbol(lexeme, token)) {
                 expressions.incrementCount(expression);
-              } else{
+              } else {
                 int index = simbols.getIndexData(lexeme, "lexema");
                 token = simbols.getData(index, "token");
               }
               matchExpression = !matchExpression;
+              semantic.analysisSemantic(lexeme, token, line);
               break;
             }
           }
@@ -70,7 +73,7 @@ public class WordAnalysis {
   }
   
   public static void main(String[] args) {
-    String text = "Hola como estas = \t como = + car_ads - ISC123R";
+    String text = "Hola como estas = \t como = + car_ads - ISC123R \n entTT_ ISC1235R ;  \n 5555555 ";
     WordAnalysis a = new WordAnalysis();
     ArrayList<String []> te = a.getWords(text);
     for (int i = 0; i < te.size(); i++) {

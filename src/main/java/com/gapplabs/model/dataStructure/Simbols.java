@@ -11,7 +11,7 @@ public class Simbols extends Common {
   public boolean registerSimbol(String lexema, String token) {
     if (!this.checkData(lexema, "lexema")) {
       this.addData(this.createMapData(nameData, lexema, token, 
-              ""));
+              "-"));
       return true;
     } else {
       return false;
