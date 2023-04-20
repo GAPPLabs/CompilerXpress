@@ -15,15 +15,9 @@ public class Expressions extends Common {
     this.addData(this.createMapData(nameData, "(<=)|(>=)|(==)|(!=)|(<)|(>)", "REL", "0"));
     this.addData(this.createMapData(nameData, "=", "ASG", "0"));
     this.addData(this.createMapData(nameData, "^ISC.*R$", "IDE", "0"));
-<<<<<<< Updated upstream
-    this.addData(this.createMapData(nameData, "^(-)?5\\d*5$", "ENT", "0"));
-    this.addData(this.createMapData(nameData, "(-\\{R\\}\".\"5\\{D\\}5)|(\\{R\\}\".\"5\\{D\\}5)", "DEC", "0"));
-    this.addData(this.createMapData(nameData, "^(ent|dec|car).+?_$", "TDS", "0"));
-=======
     this.addData(this.createMapData(nameData, "(-5\\{D\\}5|5\\{D\\}5)", "ENT", "0"));
     this.addData(this.createMapData(nameData, "(-\\{R\\}\".\"5\\{D\\}5)|(\\{R\\}\".\"5\\{D\\}5)", "DEC", "0"));
     this.addData(this.createMapData(nameData, "\\b(ent_|dec_|car_)\\b", "TDS", "0"));
->>>>>>> Stashed changes
   }
   
   public String createToken(int index) {
