@@ -3,9 +3,11 @@ package com.gapplabs.model.dataStructure;
 public class Errors extends Common {
   
   private final static String [] nameData = {"lexema", "token", "linea", "descripcion"};
+  private int errorSemantic;
 
   public Errors() {
     this.createData(nameData);
+    this.errorSemantic = 0;
   }
   
   public boolean registerError(String lexema, String token, String linea, String descripcion) {
@@ -24,6 +26,11 @@ public class Errors extends Common {
   
   public String createToken() {
     return "ERL" + (this.getSize() + 1);
+  }
+  
+  public String createTokenSemantic() {
+    this.errorSemantic ++;
+    return "ERsem" + (this.errorSemantic);
   }
   
   private String checkLine (String line, String lineBefore) {        

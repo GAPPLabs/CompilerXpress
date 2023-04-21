@@ -21,6 +21,12 @@ public class Common {
     }
   }
   
+  public void createData(String [] nameData, List<String>... data) {
+    IntStream.range(0, nameData.length).forEach(i -> {
+      structure.put(nameData[i], data[i]);
+    });
+  }
+  
   public void addData(Map<String, String> data) {
     for (String key : data.keySet()) {
       structure.get(key).add(data.get(key));

@@ -18,7 +18,7 @@ public class Expressions extends Common {
     this.addData(this.createMapData(nameData, "^ISC.*R$", "IDE", "0"));
     this.addData(this.createMapData(nameData, "^(-)?5\\d*5$", "ENT", "0"));
     this.addData(this.createMapData(nameData, "^-?\\d+\\.5\\d*5$", "DEC", "0"));
-    this.addData(this.createMapData(nameData, "^(ent|dec|car).+?_$", "TDS", "0"));
+    this.addData(this.createMapData(nameData, "^(ent|dec|car)_$", "TDS", "0"));
   }
   
   public String createToken(int index) {

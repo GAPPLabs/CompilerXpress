@@ -17,15 +17,15 @@ public class WordAnalysis {
     private Simbols simbols;
     private Errors erros;
     private Expressions expressions;
-    private Tokens tokens;
+    private SemanticAnalysis semantic;
     private ArrayList<String[]> extractedWords = new ArrayList<>();
 
     public WordAnalysis() {
         simbols = new Simbols();
         erros = new Errors();
         expressions = new Expressions();
-        tokens = new Tokens();
         this.extractedWords = new ArrayList<>();
+        semantic = new SemanticAnalysis(simbols, erros);
     }
 
     public void extractWords(String codeString) {
@@ -53,22 +53,17 @@ public class WordAnalysis {
                                 token = simbols.getData(index, "token");
                             }
                             matchExpression = !matchExpression;
+                            this.semantic.analysisSemantic(lexeme, token, line);
                             break;
                         }
                     }
 
                     if (!matchExpression) {
-                        token = erros.createToken();
-                        if (!erros.registerError(lexeme, token, String.valueOf(line + 1), "Error lexico")) {
-                            int index = erros.getIndexData(lexeme, "lexema");
-                            token = erros.getData(index, "token");
-                        }
+                        simbols.registerSimbol(lexeme, "-");
+                        this.semantic.analysisSemantic(lexeme, "-", line);
                     }
-
-                    tokens.writeToken(token);
                 }
             }
-            tokens.saveWriteToken();
         }
     }
 
@@ -82,13 +77,17 @@ public class WordAnalysis {
     }
 
     public static void main(String[] args) {
-      String text = "Hola como estas = \t como = + car_ads - ISC123R";
+      String text = //"ent_ ISC1235R ; \n" +
+                    //"ISC1235R = 666.5555 \n" + 
+                    "ent_ ISC1235R , ISC12345R ; \n" + 
+                    "dec_ ISC1235555R , ISC12444345R ; \n" + 
+                    "ent_ gass ( ent_ ISC34432R ) ; \n" +
+                    "ISC1235R = gass ( ISC1235555R ) ;";
       WordAnalysis a = new WordAnalysis();
       a.compile(text);
 
       a.simbols.printData();
       a.erros.printData();
       a.expressions.printData();
-      a.tokens.printData();
   }
 }

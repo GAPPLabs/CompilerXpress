@@ -8,10 +8,14 @@ public class Simbols extends Common {
     this.createData(nameData);
   }
   
+  public static String[] getNameData() {
+    return nameData;
+  }
+  
   public boolean registerSimbol(String lexema, String token) {
     if (!this.checkData(lexema, "lexema")) {
       this.addData(this.createMapData(nameData, lexema, token, 
-              "-"));
+              ""));
       return true;
     } else {
       return false;
