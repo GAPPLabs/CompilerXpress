@@ -2,13 +2,18 @@ package com.gapplabs.view;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.gapplabs.view.plugin.EnumerateText;
-
 import java.awt.event.MouseEvent;
 import javax.swing.*;
 
-public class MainView extends javax.swing.JFrame {
+public  class MainView extends javax.swing.JFrame {
 
     public MainView() {
+        initComponents();
+        setSettings();
+        setLookAndFell();
+    }
+
+    public void comenzar(){
         initComponents();
         setSettings();
         setLookAndFell();

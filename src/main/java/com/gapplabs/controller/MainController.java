@@ -1,5 +1,6 @@
 package com.gapplabs.controller;
 
+import com.gapplabs.model.Compiler;
 import com.gapplabs.model.analysis.WordAnalysis;
 import com.gapplabs.model.dataStructure.Simbols;
 import com.gapplabs.model.dataStructure.Errors;
@@ -14,13 +15,15 @@ import javax.swing.table.DefaultTableModel;
 public class MainController implements ActionListener {
     private MainView mainView;
     private WordAnalysis wordAnalysis;
+    private Compiler compiler;
     private ToolTable tool;
 
-    public MainController(MainView mainView, WordAnalysis wordAnalysis) {
+    public MainController(MainView mainView, WordAnalysis wordAnalysis, Compiler compiler) {
         System.out.println("arrranca el maincontroller");
         this.mainView = mainView;
         this.wordAnalysis = wordAnalysis;
         this.tool = new ToolTable(mainView);
+        this.compiler = compiler;
         // Binding the abstract buttons to the controller
         for (AbstractButton abstractButton : mainView.getAllButtons()){
             abstractButton.addActionListener(this);
@@ -31,6 +34,8 @@ public class MainController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == mainView.getAnalyze()) {
             System.out.println("Boton1 presionado");
+            this.compiler.
+
             this.wordAnalysis.compile(this.mainView.textArea.getText());
             this.mainView.getTableSimbols().setModel(tool.getModelStructure(Simbols.nameTable, 
                     wordAnalysis.getSimbols().getStructure()));
