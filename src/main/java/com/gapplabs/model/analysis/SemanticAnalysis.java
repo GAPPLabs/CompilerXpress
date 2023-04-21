@@ -48,6 +48,15 @@ public class SemanticAnalysis {
     compatible.createData(nameData, Arrays.asList("ent_"), Arrays.asList("ent_", "dec_"), Arrays.asList("car_"));
     operations.createData(nameData, Arrays.asList("+", "-", "*", "/", "%"), Arrays.asList("+", "-", "*", "/", "%"), Arrays.asList("+"));
     
+    funtions = new HashMap<>();
+    returnFuntions = new HashMap<>();
+    typeFuntions = new HashMap<>();
+    returnFuntion = null;
+    
+    initData();
+  }
+  
+  public final void initData() {
     initType = true;
     setType = false;
     typeNow = null;
@@ -62,16 +71,11 @@ public class SemanticAnalysis {
     assingType = null;
     paramsFuntion = new ArrayList<>();
     
-    funtions = new HashMap<>();
-    returnFuntions = new HashMap<>();
-    typeFuntions = new HashMap<>();
-    
     numberPassCall = 0;
     rootType = null;
     callName = null;
     paramsSize = 0;
     
-    returnFuntion = null;
     numberPassReturn = 0;
   }
   

@@ -68,6 +68,7 @@ public class WordAnalysis {
                     this.semantic.analysisSemantic(lexeme, token, line, matchExpression);
                 }
             }
+            this.semantic.initData();
         }
     }
 
