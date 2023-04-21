@@ -63,6 +63,13 @@ public class Common {
     size --;
   }
   
+  public void resetData(){
+    for (String key : structure.keySet()) {
+      structure.get(key).clear();
+    }
+    size = 0;
+  }
+  
   public Map<String, String> createMapData(String [] nameData, String... data) {
     Map<String, String> map = new HashMap<>();
     IntStream.range(0, nameData.length).forEach(i -> {

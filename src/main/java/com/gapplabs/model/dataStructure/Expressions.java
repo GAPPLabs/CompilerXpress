@@ -15,7 +15,7 @@ public class Expressions extends Common {
     this.addData(this.createMapData(nameData, "(<=)|(>=)|(==)|(!=)|(<)|(>)", "REL", "0"));
     this.addData(this.createMapData(nameData, "=", "ASG", "0"));
     this.addData(this.createMapData(nameData, "return", "RET", "0"));
-    this.addData(this.createMapData(nameData, "^ISC.*R$", "IDE", "0"));
+    this.addData(this.createMapData(nameData, "^ISC\\d{3}$", "IDE", "0"));
     this.addData(this.createMapData(nameData, "^(-)?5\\d*5$", "ENT", "0"));
     this.addData(this.createMapData(nameData, "^-?\\d+\\.5\\d*5$", "DEC", "0"));
     this.addData(this.createMapData(nameData, "^(ent|dec|car)_$", "TDS", "0"));
@@ -28,5 +28,11 @@ public class Expressions extends Common {
   public void incrementCount(int index) {
     int count = Integer.parseInt(this.getData(index, "contador"));
     this.updateData(this.createMapData(new String [] {"contador"}, String.valueOf(count + 1)), index);
+  }
+  
+   public void clearData() {
+     for (int i = 0; i < this.getSize(); i++) {
+       this.updateData(this.createMapData(new String [] {"contador"}, "0"), i);
+     }
   }
 }

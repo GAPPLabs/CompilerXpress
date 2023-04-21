@@ -40,4 +40,9 @@ public class Errors extends Common {
       }
       return line;
   }
+  
+  public void clearData() {
+    this.resetData();
+    this.errorSemantic = 0;
+  }
 }

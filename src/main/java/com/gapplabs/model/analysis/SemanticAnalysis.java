@@ -32,11 +32,15 @@ public class SemanticAnalysis {
   private List<String> paramsFuntion;
   private Map<String, List<String>> funtions;
   private Map<String, String> returnFuntions;
+  private Map<String, String> typeFuntions;
   
   private int numberPassCall;
   private String rootType;
   private String callName;
   private int paramsSize;
+  
+  private String returnFuntion;
+  private int numberPassReturn;
 
   public SemanticAnalysis(Simbols simbols, Errors errors) {
     this.simbols = simbols;
@@ -60,19 +64,28 @@ public class SemanticAnalysis {
     
     funtions = new HashMap<>();
     returnFuntions = new HashMap<>();
+    typeFuntions = new HashMap<>();
     
     numberPassCall = 0;
     rootType = null;
     callName = null;
     paramsSize = 0;
+    
+    returnFuntion = null;
+    numberPassReturn = 0;
   }
   
-  public void analysisSemantic(String lexeme, String token, int line) {
-    assingTypeData(token);
-    assingTypeIdentificator(lexeme, token);
-    checkErrorsSemantic(lexeme, token, line);
-    checkFuntionsSemantic(lexeme, token, line);
-    checkFuntionCall(lexeme, token, line);
+  public void analysisSemantic(String lexeme, String token, int line, boolean simbol) {
+    int index = simbol ? simbols.getIndexData(lexeme, "lexema") :
+                errors.getIndexData(lexeme, "lexema");
+    if (simbol) {
+      assingTypeData(token);
+      assingTypeIdentificator(lexeme, token);
+      checkErrorsSemantic(lexeme, token, line, index);
+      checkReturnFuntion(lexeme, token, line);
+    }
+    checkFuntionsSemantic(lexeme, token, index, simbol);
+    checkFuntionCall(lexeme, token, line, index, simbol);
   }
   
   
@@ -166,9 +179,7 @@ public class SemanticAnalysis {
     } return 0;
   }
   
-  private void checkErrorsSemantic(String lexeme, String token, int line) {
-    int index = simbols.getIndexData(lexeme, "lexema");
-      
+  private void checkErrorsSemantic(String lexeme, String token, int line, int index) {
     switch (numberPassOperation) {
       case 0:
         switch (this.checkVariableIndefine(lexeme, token, index, line)) {
@@ -251,8 +262,11 @@ public class SemanticAnalysis {
     this.paramsFuntion = new ArrayList<>();
   }
   
-  private void checkFuntionsSemantic(String lexeme, String token, int line) {
-    int index = simbols.getIndexData(lexeme, "lexema");
+  private void checkFuntionsSemantic(String lexeme, String token, int index, boolean simbol) {
+    if (simbol && this.numberPassFuntion == 1) {
+      resetFuntion();
+      return;
+    }
     
     switch (this.numberPassFuntion) {
       case 0:
@@ -265,7 +279,8 @@ public class SemanticAnalysis {
         }
         break;
       case 1:
-        if (simbols.getData(index, "tipo").isEmpty()) {
+        System.err.println(index);
+        if (index != -1) {
           numberPassFuntion ++;
           this.nameFuntion = lexeme;
         }
@@ -281,16 +296,54 @@ public class SemanticAnalysis {
       case 4:
         if (lexeme.equals(",") || lexeme.equals(")")) {
           if (lexeme.equals(",")) numberPassFuntion --;
-          if (lexeme.equals(")")) numberPassFuntion ++;
+          if (lexeme.equals(")")) {
+            this.returnFuntion = this.nameFuntion;
+            returnFuntions.put( this.nameFuntion, this.typeFuntion);
+            funtions.put(nameFuntion, paramsFuntion);
+            System.err.println("Guarado de : " + this.nameFuntion);
+            resetFuntion();
+          }
         } else {
           resetFuntion();
         }
         break;
-      case 5:
+    }
+  }
+  
+  private void checkReturnFuntion(String lexeme, String token, int line) {
+    switch (this.numberPassReturn) {
+      case 0:
+        if (lexeme.endsWith("return")) {
+          this.numberPassReturn ++;
+        } else {
+          this.numberPassReturn = 0;
+        }
+        break;
+      case 1:
+        int index = this.simbols.getIndexData(lexeme, "lexema");
+        String type = this.simbols.getData(index, "tipo");
+        System.out.println(this.returnFuntion + type + token);
+        System.out.println(Arrays.toString(this.returnFuntions.keySet().toArray()));
+        String typeFuntion = this.returnFuntions.get(this.returnFuntion);
+        if (!type.isEmpty()) {
+          if (compatible.checkData(type, typeFuntion)) {
+            this.typeFuntions.put(this.returnFuntion, lexeme);
+            this.numberPassReturn ++;
+          } else {
+            errors.registerError(lexeme, errors.createTokenSemantic(),
+              String.valueOf(line + 1), "Incompatibilidad de tipo " + typeFuntion);
+            this.numberPassReturn = 0;
+          }
+        } else {
+          this.numberPassReturn = 0;
+        }
+        break;
+      case 2:
         if (lexeme.equals(";")) {
-          returnFuntions.put(nameFuntion, this.typeFuntion);
-          funtions.put(nameFuntion, paramsFuntion);
-          resetFuntion();
+          this.numberPassReturn = 0;
+          this.returnFuntion = null;
+        } else {
+          this.numberPassReturn = 0;
         }
         break;
     }
@@ -303,8 +356,11 @@ public class SemanticAnalysis {
     this.paramsSize = 0;
   }
   
-  private void checkFuntionCall(String lexeme, String token, int line) {
-    int index = simbols.getIndexData(lexeme, "lexema");
+  private void checkFuntionCall(String lexeme, String token, int line, int index, boolean simbol) {
+    if (simbol && this.numberPassCall == 2) {
+      resetFunctionCall();
+      return;
+    }
     
     switch (numberPassCall) {
       case 0:
@@ -325,12 +381,13 @@ public class SemanticAnalysis {
       case 2:
         if (returnFuntions.containsKey(lexeme)) {
           String type = returnFuntions.get(lexeme);
+          String returnLexeme = this.typeFuntions.get(lexeme);
           if (compatible.checkData(type, this.rootType)) {
             this.numberPassCall ++;
             this.callName = lexeme;
           }
           else {
-            errors.registerError(lexeme, errors.createTokenSemantic(),
+            errors.registerError(returnLexeme, errors.createTokenSemantic(),
               String.valueOf(line + 1), "Incompatibilidad de tipo " + this.rootType);
             resetFunctionCall();
           }

@@ -46,22 +46,26 @@ public class WordAnalysis {
 
                         if (matcher.matches()) {
                             token = expressions.createToken(expression);
-                            if (simbols.registerSimbol(lexeme, token)) {
+                            if (simbols.registerSimbol(lexeme, token, expressions.getData(expression, "prefijo"))) {
                                 expressions.incrementCount(expression);
                             } else {
                                 int index = simbols.getIndexData(lexeme, "lexema");
                                 token = simbols.getData(index, "token");
                             }
                             matchExpression = !matchExpression;
-                            this.semantic.analysisSemantic(lexeme, token, line);
                             break;
                         }
                     }
 
                     if (!matchExpression) {
-                        simbols.registerSimbol(lexeme, "-");
-                        this.semantic.analysisSemantic(lexeme, "-", line);
+                        token = erros.createToken();
+                        if (!erros.registerError(lexeme, token, String.valueOf(line + 1), "Error lexico")) {
+                          int index = erros.getIndexData(lexeme, "lexema");
+                          token = erros.getData(index, "token");
+                        }
                     }
+                    
+                    this.semantic.analysisSemantic(lexeme, token, line, matchExpression);
                 }
             }
         }
@@ -86,11 +90,18 @@ public class WordAnalysis {
   public ArrayList<String[]> getExtractedWords() {
     return extractedWords;
   }
+  
+  private void clearData(){
+    simbols.clearData();
+    erros.clearData();
+    expressions.clearData();
+  }
 
     // This can be separated  in precompile and compile
     public void compile(String codeString) {
         System.out.println("entra en método compile");
         // Removing all the words from a previous analysis
+        clearData();
         this.extractedWords.clear();
         this.extractWords(codeString);
         this.lexicalAnalysis(this.extractedWords);

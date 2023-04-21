@@ -9,13 +9,17 @@ public class Simbols extends Common {
     this.createData(nameData);
   }
   
-  public boolean registerSimbol(String lexema, String token) {
+  public boolean registerSimbol(String lexema, String token, String type) {
     if (!this.checkData(lexema, "lexema")) {
       this.addData(this.createMapData(nameData, lexema, token, 
-              "", ""));
+              type, ""));
       return true;
     } else {
       return false;
     }
-  } 
+  }
+  
+  public void clearData() {
+    this.resetData();
+  }
 }
