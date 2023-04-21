@@ -3,6 +3,7 @@ package com.gapplabs.model.dataStructure;
 public class Errors extends Common {
   
   private final static String [] nameData = {"lexema", "token", "linea", "descripcion"};
+  public final static String [] nameTable = {"lexema", "token", "linea", "descripcion"};
   private int errorSemantic;
 
   public Errors() {

@@ -76,14 +76,11 @@ public class MainView extends javax.swing.JFrame {
         };
         analyze = new javax.swing.JButton();
         reset = new javax.swing.JButton();
-        save = new javax.swing.JButton();
         javax.swing.JMenuBar jMenuBar1 = new javax.swing.JMenuBar();
         javax.swing.JMenu jMenu1 = new javax.swing.JMenu();
         open = new javax.swing.JMenuItem();
         javax.swing.JPopupMenu.Separator jSeparator1 = new javax.swing.JPopupMenu.Separator();
         exit = new javax.swing.JMenuItem();
-        javax.swing.JMenu jMenu2 = new javax.swing.JMenu();
-        about = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("CompilerXpress - GAPP LABS");
@@ -118,32 +115,12 @@ public class MainView extends javax.swing.JFrame {
 
         jLabel3.setText("Tabla de simbolos:");
 
-        tableSimbols.setModel(new javax.swing.table.DefaultTableModel(
-                new Object[][]{
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null}
-                },
-                new String[]{
-                        "Title 1", "Title 2", "Title 3", "Title 4"
-                }
-        ));
+        tableSimbols.setModel(new javax.swing.table.DefaultTableModel());
         jScrollPane2.setViewportView(tableSimbols);
 
         jLabel4.setText("Tabla de errores:");
 
-        tableErrors.setModel(new javax.swing.table.DefaultTableModel(
-                new Object[][]{
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null},
-                        {null, null, null, null}
-                },
-                new String[]{
-                        "Title 1", "Title 2", "Title 3", "Title 4"
-                }
-        ));
+        tableErrors.setModel(new javax.swing.table.DefaultTableModel());
         jScrollPane3.setViewportView(tableErrors);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -175,8 +152,6 @@ public class MainView extends javax.swing.JFrame {
 
         reset.setText("Reiniciar");
 
-        save.setText("Guardar");
-
         jMenu1.setText("Archivo");
 
         open.setText("Abrir archivo");
@@ -190,13 +165,6 @@ public class MainView extends javax.swing.JFrame {
         exit.getAccessibleContext().setAccessibleName("");
 
         jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Ayuda");
-
-        about.setText("Acerca");
-        jMenu2.add(about);
-
-        jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
 
@@ -213,8 +181,7 @@ public class MainView extends javax.swing.JFrame {
                                                 .addComponent(analyze)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(reset)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(save)))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                                 .addGap(8, 8, 8))
         );
         layout.setVerticalGroup(
@@ -227,8 +194,7 @@ public class MainView extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                         .addComponent(analyze)
-                                        .addComponent(reset)
-                                        .addComponent(save))
+                                        .addComponent(reset))
                                 .addGap(8, 8, 8))
         );
 
@@ -237,17 +203,11 @@ public class MainView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JMenuItem about;
     public javax.swing.JButton analyze;
     public javax.swing.JMenuItem exit;
     public javax.swing.JMenuItem open;
     public javax.swing.JButton reset;
-    public javax.swing.JButton save;
     private javax.swing.JScrollPane scrollTextArea;
-
-    public JMenuItem getAbout() {
-        return about;
-    }
 
     public JButton getAnalyze() {
         return analyze;
@@ -263,10 +223,6 @@ public class MainView extends javax.swing.JFrame {
 
     public JButton getReset() {
         return reset;
-    }
-
-    public JButton getSave() {
-        return save;
     }
 
     public JScrollPane getScrollTextArea() {
@@ -286,7 +242,7 @@ public class MainView extends javax.swing.JFrame {
     }
 
     public AbstractButton[] getAllButtons() {
-        AbstractButton componetsArray[] = {this.about, this.analyze, this.exit, this.open, this.reset, this.save};
+        AbstractButton componetsArray[] = {this.analyze, this.exit, this.open, this.reset};
         return componetsArray;
     }
 

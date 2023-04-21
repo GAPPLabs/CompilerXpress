@@ -67,6 +67,26 @@ public class WordAnalysis {
         }
     }
 
+  public Simbols getSimbols() {
+    return simbols;
+  }
+
+  public Errors getErros() {
+    return erros;
+  }
+
+  public Expressions getExpressions() {
+    return expressions;
+  }
+
+  public SemanticAnalysis getSemantic() {
+    return semantic;
+  }
+
+  public ArrayList<String[]> getExtractedWords() {
+    return extractedWords;
+  }
+
     // This can be separated  in precompile and compile
     public void compile(String codeString) {
         System.out.println("entra en método compile");
@@ -76,18 +96,18 @@ public class WordAnalysis {
         this.lexicalAnalysis(this.extractedWords);
     }
 
-    public static void main(String[] args) {
-      String text = //"ent_ ISC1235R ; \n" +
-                    //"ISC1235R = 666.5555 \n" + 
-                    "ent_ ISC1235R , ISC12345R ; \n" + 
-                    "dec_ ISC1235555R , ISC12444345R ; \n" + 
-                    "ent_ gass ( ent_ ISC34432R ) ; \n" +
-                    "ISC1235R = gass ( ISC1235555R ) ;";
-      WordAnalysis a = new WordAnalysis();
-      a.compile(text);
-
-      a.simbols.printData();
-      a.erros.printData();
-      a.expressions.printData();
-  }
+//    public static void main(String[] args) {
+//      String text = //"ent_ ISC1235R ; \n" +
+//                    //"ISC1235R = 666.5555 \n" + 
+//                    "ent_ ISC1235R , ISC12345R ; \n" + 
+//                    "dec_ ISC1235555R , ISC12444345R ; \n" + 
+//                    "ent_ gass ( ent_ ISC34432R ) ; \n" +
+//                    "ISC1235R = gass ( ISC1235555R ) ;";
+//      WordAnalysis a = new WordAnalysis();
+//      a.compile(text);
+//
+//      a.simbols.printData();
+//      a.erros.printData();
+//      a.expressions.printData();
+//  }
 }
