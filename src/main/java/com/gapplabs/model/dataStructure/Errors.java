@@ -4,10 +4,12 @@ public class Errors extends Common {
   
   private final static String [] nameData = {"lexema", "token", "linea", "descripcion"};
   public final static String [] nameTable = {"lexema", "token", "linea", "descripcion"};
+  private int errorLexical;
   private int errorSemantic;
-
+ 
   public Errors() {
     this.createData(nameData);
+    this.errorLexical = 0;
     this.errorSemantic = 0;
   }
   
@@ -26,7 +28,8 @@ public class Errors extends Common {
   }
   
   public String createToken() {
-    return "ERL" + (this.getSize() + 1);
+    this.errorLexical ++;
+    return "ERL" + (this.errorLexical);
   }
   
   public String createTokenSemantic() {
@@ -43,6 +46,7 @@ public class Errors extends Common {
   
   public void clearData() {
     this.resetData();
+    this.errorLexical = 0;
     this.errorSemantic = 0;
   }
 }
