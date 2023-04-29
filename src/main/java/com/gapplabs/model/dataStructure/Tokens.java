@@ -14,12 +14,20 @@ public class Tokens extends Common {
   
   public void writeToken (String token) {
     contentToken += initLine ? token : " " + token;
-    if (initLine) initLine = !initLine;
+    if (initLine) initLine = false;
   }
   
   public void saveWriteToken() {
     this.addData(this.createMapData(new String[] {"linea"}, contentToken));
     contentToken = "";
-    initLine = !initLine;
+    initLine = true;
+  }
+  
+  public String getTokesLine() {
+    return String.join("\n", this.getList("linea"));
+  }
+  
+  public void clearData() {
+    this.resetData();
   }
 }
