@@ -24,6 +24,9 @@ public class IntermediateAnalysis {
   
   // Estructura de funciones:
   private Map<String, List<String>> function;
+  private Map<String, Map<String, Integer>> position;
+  private String nameFunction;
+  // private ArrayList<Integer> position;
 
   // Almacen de jerarquia auxiliares:
   private int temporaryCounter;
@@ -33,10 +36,16 @@ public class IntermediateAnalysis {
     this.simbols = simbols;
     this.errors = errors;
     this.intermediates = intermediates;
+    initData();
+  }
+  
+  public final void initData() {
     this.temporaryCounter = 0;
     this.init = false;
+    this.nameFunction = null;
     this.control = new ArrayList<>();
     this.function = new HashMap<>();
+    this.position = new HashMap<>();
   }
 
   public void compile(ArrayList<String[]> extractedWords) {
@@ -44,14 +53,20 @@ public class IntermediateAnalysis {
       initializationCode(words);
       createFuntion(words);
       keyFuntion(words);
+      returnFuntion(words);
+      callFuntion(words);
     }
 
     System.out.println("Intermediate");
     for (ArrayList<String> code : this.control) {
       System.out.println(Arrays.toString(code.toArray()));
       initializationIntermediate(code);
+      createFunctionIntermediate(code);
       keyIntermediate(code);
+      returnFunctionIntermediate(code);
+      callFunctionIntermediate(code);
     }
+    intermediates.registerIntermediate("", "", "", "fin de triplo");
   }
 
   // Método para pseudocodigo de asignaciones:
@@ -135,17 +150,12 @@ public class IntermediateAnalysis {
             }
             break;
           case 3:
-            if (token.contains("TDS")) {
-              parameters.add(word);
-              process++;
-            } else {
-              return;
-            }
+            if (token.contains("TDS")) process++;
+            else return;
             break;
           case 4:
             if (token.contains("IDE")) {
-              String update = parameters.get(parameters.size() - 1) + ":" + word;
-              parameters.set(parameters.size() - 1, update);
+              parameters.add(word);
               process++;
             } else {
               return;
@@ -158,8 +168,8 @@ public class IntermediateAnalysis {
               }
               if (word.equals(")")) {
                 parameters.add("return");
-                parameters.add(typeFunction);
                 this.function.put(nameFunction, parameters);
+                this.control.add(new ArrayList<>(Arrays.asList("Funcion", nameFunction)));
                 return;
               }
             } else {
@@ -194,7 +204,42 @@ public class IntermediateAnalysis {
     }
   }
   
-  // Método para pseudocodigo de asignaciones:
+  // Método que genera el pseudocodigo de regreso de funciones.
+  private void returnFuntion(String[] words) {
+    ArrayList<String> parameters = new ArrayList<>();
+    int process = 0;
+
+    for (String word : words) {
+      if (!word.isEmpty()) {
+        String token = "";
+        if (simbols.checkData(word, "lexema")) {
+          token = simbols.getData(simbols.getIndexData(word, "lexema"), "token");
+        }
+        
+        switch (process) {
+          case 0:
+            if (word.equals("return")) {
+            parameters.add("Regreso");
+            process ++;
+            } else return;
+            break;
+          case 1:
+            if (token.contains("IDE") || token.contains("TDS")) {
+              parameters.add(word);
+              process ++;
+            } else return;
+            break;
+          case 2:
+            if (word.equals(";")) {
+              this.control.add(parameters);
+              return;
+            } else return;
+        }
+      }
+    }
+  }
+  
+  // Método para pseudocodigo de llamada de funcion:
   private void callFuntion(String[] words) {
     String inicialization = "";
     String nameFuntion = "";
@@ -216,14 +261,15 @@ public class IntermediateAnalysis {
             process++;
             break;
           case 1:
-            if (word.equals("=")) {
-              nameFuntion = word;
-              process++;
-            }
+            if (word.equals("=")) process++;
             else return;
             break;
           case 2:
-            if(function.containsKey(word)) process++;
+            if(function.containsKey(word)) {
+              parameters.add(word);
+              nameFuntion = word;
+              process++;
+            }
             else return;
             break;
           case 3:
@@ -231,23 +277,24 @@ public class IntermediateAnalysis {
             else return;
             break;
           case 4:
-            String [] assing = function.get(nameFuntion).get(index).split(":");
-            
+            parameters.add("Asignacion");
+            parameters.add(word);
+            parameters.add(function.get(nameFuntion).get(index));
+            process++;
+            index++;
             break;
-          case 4:
-            if (token.contains("AMR") || word.equals(";")) {
-              if (token.contains("AMR")) {
-                parameters.add(word);
-                process--;
+          case 5:
+            if (word.equals(",") || word.equals(")")) {
+              if (word.equals(",")) {
+                process --;
               }
-              if (word.equals(";")) {
+              if (word.equals(")")) {
+                parameters.add("return");
                 parameters.add(inicialization);
-                control.add(parameters);
+                this.control.add(parameters);
                 return;
               }
-            } else {
-              return;
-            }
+            } else return;
             break;
         }
       }
@@ -275,16 +322,65 @@ public class IntermediateAnalysis {
     }
   }
   
+  // Método auxiliar para la creación de funciones.
+  private void createFunctionIntermediate(ArrayList<String> codes) {
+    boolean correct = codes.get(0).equals("Funcion");
+    String nameFunction = codes.get(1);
+    
+    if (correct) {
+      this.position.put(nameFunction, new HashMap<>());
+      this.nameFunction = nameFunction;
+    }
+  }
+  
+    // Método auxiliar para la creación de funciones.
+  private void returnFunctionIntermediate(ArrayList<String> codes) {
+    boolean correct = codes.get(0).equals("Regreso");
+    
+    if (correct) {
+      this.function.get(this.nameFunction).add(codes.get(1));
+    }
+  }
+  
   // Registra las delimitaciones de las funciones en el tiplo
   private void keyIntermediate(ArrayList<String> codes) {
     boolean correct = codes.get(0).equals("Limite");
     if (correct) {
       if (codes.get(1).equals("inicio")) {
         intermediates.registerIntermediate("", "", "JMP", "Salto inicio funcion");
+        position.get(this.nameFunction).put("inicio", intermediates.getSize());
       } else {
         int index = intermediates.getLastIndexData("Salto inicio funcion", "etiqueta");
         intermediates.updateData(intermediates.createMapData(new String[] {"fuente"}, String.valueOf(intermediates.getSize() + 2)), index);
         intermediates.registerIntermediate("", "", "JMP", "Salto fin funcion");
+        position.get(this.nameFunction).put("fin", intermediates.getSize() - 1);
+      }
+    }
+  }
+  
+  // Registra las llamadas de funcion en el tiplo
+  private void callFunctionIntermediate(ArrayList<String> codes) {
+    boolean correct = codes.get(0).equals("Llamada");
+    String nameFunction = codes.get(1);
+  
+    if (correct) {
+      for (int i = 2; i < codes.size(); i++) {
+        if (codes.get(i).equals("Asignacion")) {
+          List<String> subList = codes.subList(i, i + 3);
+          initializationIntermediate(new ArrayList<>(subList));
+          i += 2;
+        }
+        if (codes.get(i).equals("return")) {
+          intermediates.registerIntermediate("", intermediates.getData(position.get(nameFunction).get("inicio"), 
+                  "renglon"), "JMP", "Salto hacia la funcion");
+          intermediates.updateData(intermediates.createMapData(new String[] {"fuente"}, String.valueOf(intermediates.getSize() + 1)),
+                  position.get(nameFunction).get("fin"));
+          ArrayList<String> subList = new ArrayList<>(Arrays.asList("Asignacion",
+                  function.get(nameFunction).get(function.get(nameFunction).size() - 1),
+                  codes.get(codes.size() - 1)));
+          initializationIntermediate(subList);
+          return;
+        }
       }
     }
   }

@@ -71,8 +71,13 @@ public class WordAnalysis {
               token = erros.getData(index, "token");
             }
           }
-
-          this.semantic.analysisSemantic(lexeme, token, line, matchExpression);
+          
+          try {
+            this.semantic.analysisSemantic(lexeme, token, line);
+          } catch (Exception error) {
+            System.out.println("Error de excepcion por error lexico");
+            this.semantic.initData();
+          }
           tokens.writeToken(token);
         }
       }
@@ -129,6 +134,7 @@ public class WordAnalysis {
     this.extractedWords.clear();
     this.extractWords(codeString);
     this.lexicalSemanticAnalysis(this.extractedWords);
+    this.intermediate.initData();
     this.intermediate.compile(extractedWords);
     this.intermediates.printData();
   }
