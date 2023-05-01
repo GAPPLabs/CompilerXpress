@@ -99,6 +99,10 @@ public class Common {
     return structure.get(nameData).indexOf(data);
   }
   
+  public int getLastIndexData(String data, String nameData) {
+    return structure.get(nameData).lastIndexOf(data);
+  }
+  
   public List<String> getList(String nameData) {
     return structure.get(nameData);
   }

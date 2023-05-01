@@ -283,12 +283,8 @@ public class SemanticAnalysis {
         }
         break;
       case 1:
-        System.err.println(index);
-        if (index != -1) {
-          numberPassFuntion ++;
-          this.nameFuntion = lexeme;
-        }
-        else resetFuntion();
+        numberPassFuntion ++;
+        this.nameFuntion = lexeme;
         break;
       case 2:
         if (lexeme.equals("(")) numberPassFuntion ++;
