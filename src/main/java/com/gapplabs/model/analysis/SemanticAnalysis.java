@@ -79,17 +79,14 @@ public class SemanticAnalysis {
     numberPassReturn = 0;
   }
   
-  public void analysisSemantic(String lexeme, String token, int line, boolean simbol) {
-    int index = simbol ? simbols.getIndexData(lexeme, "lexema") :
-                errors.getIndexData(lexeme, "lexema");
-    if (simbol) {
-      assingTypeData(token);
-      assingTypeIdentificator(lexeme, token);
-      checkErrorsSemantic(lexeme, token, line, index);
-      checkReturnFuntion(lexeme, token, line);
-    }
-    checkFuntionsSemantic(lexeme, token, index, simbol);
-    checkFuntionCall(lexeme, token, line, index, simbol);
+  public void analysisSemantic(String lexeme, String token, int line) {
+    int index = simbols.getIndexData(lexeme, "lexema");
+    assingTypeData(token);
+    assingTypeIdentificator(lexeme, token);
+    checkErrorsSemantic(lexeme, token, line, index);
+    checkFuntionsSemantic(lexeme, token, index);
+    checkReturnFuntion(lexeme, token, line);
+    checkFuntionCall(lexeme, token, line, index);
   }
   
   
@@ -266,12 +263,7 @@ public class SemanticAnalysis {
     this.paramsFuntion = new ArrayList<>();
   }
   
-  private void checkFuntionsSemantic(String lexeme, String token, int index, boolean simbol) {
-    if (simbol && this.numberPassFuntion == 1) {
-      resetFuntion();
-      return;
-    }
-    
+  private void checkFuntionsSemantic(String lexeme, String token, int index) {
     switch (this.numberPassFuntion) {
       case 0:
         String type = getTypeLexeme(lexeme);
@@ -283,12 +275,8 @@ public class SemanticAnalysis {
         }
         break;
       case 1:
-        System.err.println(index);
-        if (index != -1) {
-          numberPassFuntion ++;
-          this.nameFuntion = lexeme;
-        }
-        else resetFuntion();
+        numberPassFuntion ++;
+        this.nameFuntion = lexeme;
         break;
       case 2:
         if (lexeme.equals("(")) numberPassFuntion ++;
@@ -360,12 +348,7 @@ public class SemanticAnalysis {
     this.paramsSize = 0;
   }
   
-  private void checkFuntionCall(String lexeme, String token, int line, int index, boolean simbol) {
-    if (simbol && this.numberPassCall == 2) {
-      resetFunctionCall();
-      return;
-    }
-    
+  private void checkFuntionCall(String lexeme, String token, int line, int index) {
     switch (numberPassCall) {
       case 0:
         switch (this.checkVariableIndefine(lexeme, token, index, line)) {
