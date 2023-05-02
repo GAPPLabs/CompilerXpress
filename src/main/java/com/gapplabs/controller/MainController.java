@@ -26,8 +26,9 @@ public class MainController implements ActionListener {
         for (AbstractButton abstractButton : mainView.getAllButtons()){
             abstractButton.addActionListener(this);
         }
-        this.mainView.getTableSimbols().setModel(new DefaultTableModel());
-        this.mainView.getTableErrors().setModel(new DefaultTableModel());
+
+        this.mainView.getTableSimbols().setModel(new DefaultTableModel(new String[]{"Lexema", "Tipo", "Descripción"}, 0));
+        this.mainView.getTableErrors().setModel(new DefaultTableModel(new String[]{"Token", "Lexema", "Descripción"}, 0)));
         this.mainView.getTableTriplo().setModel(new DefaultTableModel());
     }
 

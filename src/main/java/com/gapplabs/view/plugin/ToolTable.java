@@ -26,6 +26,7 @@ public class ToolTable {
     DefaultTableModel model = new DefaultTableModel();
     for (String name : nameData) {
       model.addColumn(name, structure.get(name).toArray());
+
     }
     return model;
   }
