@@ -14,11 +14,8 @@ public class App {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
 
-
-
-
-
                 WordAnalysis wordAnalysis = new WordAnalysis();
+//                Compiler compiler = new Compiler();
                 ViewMain view = new ViewMain();
                 MainController mainController = new MainController(view, wordAnalysis);
                 view.setVisible(true);

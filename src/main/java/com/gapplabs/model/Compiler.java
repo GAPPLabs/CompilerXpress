@@ -3,6 +3,7 @@ package com.gapplabs.model;
 import com.gapplabs.model.dataStructure.*;
 import com.gapplabs.model.dataStructure.Error;
 
+import java.sql.SQLOutput;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,7 +26,7 @@ public class Compiler<T> {
 //        this.lexerPatternLinkedHashMapDAO = new LinkedHashMapDAO<>();
 //        // It adds all the regular expressions components created
 //        this.addRegularExpressionsHashMapDAO();
-//        this.lines = new ArrayList<>();
+        this.lines = new ArrayList<>();
     }
 
     private void addRegularExpressionsHashMapDAO() {
@@ -117,7 +118,7 @@ public class Compiler<T> {
             for (String lexeme : lines.get(line)) {
                 if (!lexeme.isEmpty()) {
 
-                    GenericLexicalComponent genericLexicalComponent = (GenericLexicalComponent) this.genericLexicalComponentLinkedHashMap.get(lexeme);
+                    GenericLexicalComponent genericLexicalComponent = (GenericLexicalComponent) GenericLexicalComponent.getGenericLexicalComponentArrayList().get(lexeme);
                     if (genericLexicalComponent instanceof Error) {
                         // Adding the current line number  to the list of that instance
                         ((Error) genericLexicalComponent).addNumberLine(line);
@@ -125,10 +126,10 @@ public class Compiler<T> {
                         // Si no se encuentra, entonces hacemos uso de las expresiones regulares
                         // Tiene que ser agregada porque no lo permite  el compilador en la expresión lambda
                         RegexEnum tokenString = this.getRegexEnum(lexeme);
-                        if (tokenString.equals(null)){
-                            this.genericLexicalComponentLinkedHashMap.put(lexeme, new Simbol(TokenGenerator.generateToken(tokenString), lexeme, line, ""));
+                        if (tokenString ==null ){
+                            new Error(TokenGenerator.generateToken(RegexEnum.ERROR), lexeme,line, "");
                         }else{
-                            this.genericLexicalComponentLinkedHashMap.put(lexeme, new Simbol(TokenGenerator.generateToken(RegexEnum.ERROR), lexeme, line, ""));
+                           new Simbol(TokenGenerator.generateToken(tokenString), lexeme, line, "");
                         }
                     }
                 }
@@ -139,20 +140,26 @@ public class Compiler<T> {
     public RegexEnum getRegexEnum(String lexeme) {
         for (RegexEnum regexPattern: RegexEnum.values()) {
             if (Pattern.compile(regexPattern.getRegex()).matcher(lexeme).matches()){
+                System.out.println("ENCONTRÓ EL REGEX PATTERN");
                 return regexPattern;
             }
         }
+        System.out.println("No ENCONTRÓ EL REGEX PATTERN");
         return null;
     }
 
 
     public void compile(String codeString) {
         // Cleaning all the structures
-        this.clearStructures();
+//        this.clearStructures();
 
-        System.out.println("entra en método compile");
+        System.out.println("entra en método compile222");
         this.extractLines(codeString);
         this.lexicalAnalysis2();
+        System.out.println("nueva estructura");
+        for (Simbol simbol:Simbol.getSimbolHashSet()) {
+            System.out.println(simbol);
+        }
 //        this.lexicalAnalysis(this.lines);
 
     }
