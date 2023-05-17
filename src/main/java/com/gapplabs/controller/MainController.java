@@ -36,16 +36,6 @@ public class MainController implements ActionListener {
         this.mainView.getTableTriplo().setModel(new DefaultTableModel());
     }
 
-    public void setModelData(DefaultTableModel model, Collection<?> colection){
-        if (colection.getClass() == Simbol.class){
-            colection.forEach(simbol -> {
-                Simbol simbol2 = (Simbol) simbol;
-                model.addRow(new Object[]{simbol2.getLexema()});
-            });
-        }
-
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == mainView.getAnalyze()) {
