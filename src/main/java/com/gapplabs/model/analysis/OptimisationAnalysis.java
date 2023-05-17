@@ -26,8 +26,8 @@ public class OptimisationAnalysis {
                                 """;
 
     public OptimisationAnalysis() {
-        this.expressionFunction = "ISC\\d{3}\\s*\\(.\\)\\s\\{[^}]*\\}$";
-        this.expressionSubFunction = "ISC\\d{3}\\s*\\(.*\\)$";
+        this.expressionFunction = "ISC\\d{3}\\s*\\(.*?\\)\\s*\\{(?s).*\\}";
+        this.expressionSubFunction = "ISC\\d{3}\\s*\\(.*\\)";
     }
     
     private void functionAnalysis () {
@@ -36,12 +36,26 @@ public class OptimisationAnalysis {
         
         System.err.println("RUNNN");
         while (matcher.find()) {
-            String funcionEncontrada = matcher.group();
-            System.out.println("Función encontrada: " + funcionEncontrada);
+            System.out.println("Función encontrada: " + matcher.group() +
+                    " - Inicio: " + matcher.start() +
+                    " ~ Fin: " + matcher.end());
+        }
+    }
+    
+    private void subFunctionAnalysis() {
+        Pattern pattern = Pattern.compile(expressionSubFunction);
+        Matcher matcher = pattern.matcher(test);
+        
+        System.err.println("RUNNN");
+        while (matcher.find()) {
+            System.out.println("Función encontrada: " + matcher.group() +
+                    " - Inicio: " + matcher.start() +
+                    " ~ Fin: " + matcher.end());
         }
     }
     
     public static void main(String[] args) {
         new OptimisationAnalysis().functionAnalysis();
+        new OptimisationAnalysis().subFunctionAnalysis();
     }
 }
