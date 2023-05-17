@@ -150,8 +150,19 @@ public class IntermediateAnalysis {
             }
             break;
           case 3:
-            if (token.contains("TDS")) process++;
-            else return;
+            if (token.contains("TDS") || word.equals(")")) {
+              if (token.contains("TDS")) {
+                process++;
+              }
+              if (word.equals(")")) {
+                parameters.add("return");
+                this.function.put(nameFunction, parameters);
+                this.control.add(new ArrayList<>(Arrays.asList("Funcion", nameFunction)));
+                return;
+              }
+            } else {
+              return;
+            }
             break;
           case 4:
             if (token.contains("IDE")) {
@@ -253,6 +264,11 @@ public class IntermediateAnalysis {
         if (simbols.checkData(word, "lexema")) {
           token = simbols.getData(simbols.getIndexData(word, "lexema"), "token");
         }
+        
+        if(function.containsKey(word) && process == 0) {
+          parameters.add("Llamada");
+          process+=2;
+        }
 
         switch (process) {
           case 0:
@@ -277,11 +293,18 @@ public class IntermediateAnalysis {
             else return;
             break;
           case 4:
-            parameters.add("Asignacion");
-            parameters.add(word);
-            parameters.add(function.get(nameFuntion).get(index));
-            process++;
-            index++;
+            if (word.equals(")")) {
+                parameters.add("return");
+                parameters.add(inicialization);
+                this.control.add(parameters);
+                return;
+            } else {
+              parameters.add("Asignacion");
+              parameters.add(word);
+              parameters.add(function.get(nameFuntion).get(index));
+              process++;
+              index++;
+            }
             break;
           case 5:
             if (word.equals(",") || word.equals(")")) {
@@ -333,7 +356,7 @@ public class IntermediateAnalysis {
     }
   }
   
-    // Método auxiliar para la creación de funciones.
+    // Método auxiliar para el return de las funciones.
   private void returnFunctionIntermediate(ArrayList<String> codes) {
     boolean correct = codes.get(0).equals("Regreso");
     

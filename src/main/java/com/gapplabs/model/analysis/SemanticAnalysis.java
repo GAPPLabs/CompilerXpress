@@ -322,8 +322,14 @@ public class SemanticAnalysis {
             this.typeFuntions.put(this.returnFuntion, lexeme);
             this.numberPassReturn ++;
           } else {
-            errors.registerError(lexeme, errors.createTokenSemantic(),
+            if (type.contains("IDE")) {
+              errors.registerError(lexeme, errors.createTokenSemantic(),
+              String.valueOf(line + 1), "Variable indefinida");
+            } else {
+              errors.registerError(lexeme, errors.createTokenSemantic(),
               String.valueOf(line + 1), "Incompatibilidad de tipo " + typeFuntion);
+            }
+            
             this.numberPassReturn = 0;
           }
         } else {
