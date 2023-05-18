@@ -101,9 +101,13 @@ public class OptimisationAnalysis {
             System.out.println("End position: " + end);
             return new Functions(identify, params, body, start, end, function, matcher);
         } else {
+            int start = matcher.start();
+            int end = matcher.end();
             System.out.println("Identify: " + identify);
             System.out.println("Params: " + Arrays.toString(params));
-            return new Functions(identify, params, null, -1, -1, function, matcher);
+            System.out.println("Start position: " + start);
+            System.out.println("End position: " + end);
+            return new Functions(identify, params, null, start, end, function, matcher);
         }
     }
 
@@ -117,8 +121,6 @@ public class OptimisationAnalysis {
         }
         // Extrayendo las líneas de código antes del return y se hace la separación por línea
         String[] stringBeforeReturn = textBody2.split("return")[0].split("\n");
-
-
 
         // Encontrando la línea anterior a la invocación del método a remover
         ArrayList<String> stringArrayList = new ArrayList<>();
@@ -149,6 +151,6 @@ public class OptimisationAnalysis {
 //        System.out.println("imprimiendo lo siguiente 1");
 //        System.out.println(funciones[2].getBody());
 //        funciones[0].
-        op.compactBody(funciones[0], funciones[2], funciones[1]);
+        System.out.println(op.compactBody(funciones[0], funciones[2], funciones[1]));
     }
 }
