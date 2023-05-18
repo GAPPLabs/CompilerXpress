@@ -202,6 +202,15 @@ public class OptimisationAnalysis {
         return codigoFinal;
     }
 
+    public String removeFunction(Functions funcion2, String code){
+      return code.replace(funcion2.getMatcher().group(), "");
+    }
+
+    public String replacebody(Functions funcion0, String compactedBody){
+        System.out.println(test.replace(funcion0.getBody(), compactedBody + "\n"));
+        return test.replace(funcion0.getBody(), compactedBody + "\n");
+    }
+
     public static void main(String[] args) {
         OptimisationAnalysis op = new OptimisationAnalysis();
         Functions[] funciones = op.chechFunctionOptimizer(op.test);
@@ -210,9 +219,19 @@ public class OptimisationAnalysis {
 //        System.out.println("imprimiendo lo siguiente 1");
 //        System.out.println(funciones[2].getBody());
 //        funciones[0].
+        // Código que permite copiar y pegar el cuerpo de la función a remover a la función base
        String compactedBody = op.compactBody(funciones[0], funciones[2], funciones[1]);
-       op.removeTransitiveVariables(compactedBody);
+       // Método que elimina las variables transitivas. En casos extremos es necesario incrustarlo en una estructura de
+        // control de flujo iterativa
+       compactedBody = op.removeTransitiveVariables(compactedBody);
 
+       // Método para reemplazar el cuerpo obsoleto de la función base por el compactado
+        String finalCode = op.replacebody(funciones[0], compactedBody);
+
+        System.out.println("eliminando la primera función");
+        // Método para eliminar toda la primera función
+        finalCode = op.removeFunction(funciones[2], finalCode);
+        System.out.println(finalCode);
 
     }
 }
