@@ -21,8 +21,6 @@ public class Functions {
         this.matcher = matcher;
     }
     
-    
-
     public String getIdentify() {
         return identify;
     }
