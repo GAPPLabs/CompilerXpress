@@ -111,29 +111,40 @@ public class OptimisationAnalysis {
         System.out.println("EMPIEZA LA FUNCIÓN DE COMPACT BODY");
         String textBody2 = body2.getBody();
         String textBody0 = body0.getBody();
+//        System.out.println(textBody2);
         // Iterando cada parámetro pra hacer el reemplazo de los nombres de las variables
         for (int i = 0; i < call.getParams().length; i++) {
-            textBody2.replaceAll(body2.getParams()[i], call.getParams()[i]);
-        }
-        // Extrayendo las líneas de código antes del return y se hace la separación por línea
-        String[] stringBeforeReturn = textBody2.split("return")[0].split("\n");
 
+            textBody2 =  textBody2.replace(body2.getParams()[i], call.getParams()[i]);
+//            System.out.print(textBody2.indexOf(body2.getParams()[i]));
+        }
+//        System.out.println(textBody2);
+        // Extrayendo las líneas de código antes del return y se hace la separación por línea
+        String stringBeforeReturn = textBody2.split("return")[0];
+        System.out.println("haciendo el split");
+//        System.out.println(stringBeforeReturn);
 
 
         // Encontrando la línea anterior a la invocación del método a remover
         ArrayList<String> stringArrayList = new ArrayList<>();
         stringArrayList.addAll(List.of(textBody0.split("\n")));
+
+        // Código para intentar eliminar los espacios / líneas en blanc0. Probablemente se tenga que hacer un último
+        // procesamiento para eliminar el \n\n porque no sé en qué parte se están duplicando
+        stringArrayList.remove(" ");
+
         for (int i = 0; i < stringArrayList.size(); i++) {
             if(stringArrayList.get(i).contains(call.getMatcher().group())){
                 stringArrayList.addAll(i-1, List.of(stringBeforeReturn));
                 break;
             }
         }
+
         // Creando una nueva variable que contiene la nueva información agregada que se extrajo de la función a remover
         String newTextBody0 = String.join("\n", stringArrayList);
 
         // Adaptando el return de la función a remover por la secuencia encontrada en la función base
-        newTextBody0.replaceAll(call.getMatcher().group(), textBody2.split("return")[1]);
+        newTextBody0 = newTextBody0.replace(call.getMatcher().group(), textBody2.split("return")[1]);
 
         // Retornando el objeto String de la función base que ya tiene insertado el código de la función a remover
         return newTextBody0;
