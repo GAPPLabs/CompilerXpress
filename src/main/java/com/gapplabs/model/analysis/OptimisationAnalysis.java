@@ -1,8 +1,11 @@
 package com.gapplabs.model.analysis;
 
 import com.gapplabs.model.analysis.util.Functions;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,10 +28,11 @@ public class OptimisationAnalysis {
                                 return ISC914 ;
                                 }
                                 
-                                ent_ ISC334 ( ent_ ISC914 )
+                                ent_ ISC334 ( ent_ ISC915 )
                                 {
-                                ISC914 = ISC333 ( ISC914 , ISC913 , ISC916 ) ;
-                                return ISC914 ;
+                                
+                                ISC915 = ISC333 ( ISC915 ) ;
+                                return ISC915 ;
                                 }
                                 
                                 ent_ ISC335 ( ent_ ISC914 )
@@ -102,9 +106,49 @@ public class OptimisationAnalysis {
             return new Functions(identify, params, null, -1, -1, function, matcher);
         }
     }
+
+    public String compactBody(Functions body0, Functions body2, Functions call){
+        System.out.println("EMPIEZA LA FUNCIÓN DE COMPACT BODY");
+        String textBody2 = body2.getBody();
+        String textBody0 = body0.getBody();
+        // Iterando cada parámetro pra hacer el reemplazo de los nombres de las variables
+        for (int i = 0; i < call.getParams().length; i++) {
+            textBody2.replaceAll(body2.getParams()[i], call.getParams()[i]);
+        }
+        // Extrayendo las líneas de código antes del return y se hace la separación por línea
+        String[] stringBeforeReturn = textBody2.split("return")[0].split("\n");
+
+
+
+        // Encontrando la línea anterior a la invocación del método a remover
+        ArrayList<String> stringArrayList = new ArrayList<>();
+        stringArrayList.addAll(List.of(textBody0.split("\n")));
+        for (int i = 0; i < stringArrayList.size(); i++) {
+            if(stringArrayList.get(i).contains(call.getMatcher().group())){
+                stringArrayList.addAll(i-1, List.of(stringBeforeReturn));
+                break;
+            }
+        }
+        // Creando una nueva variable que contiene la nueva información agregada que se extrajo de la función a remover
+        String newTextBody0 = String.join("\n", stringArrayList);
+
+        // Adaptando el return de la función a remover por la secuencia encontrada en la función base
+        newTextBody0.replaceAll(call.getMatcher().group(), textBody2.split("return")[1]);
+
+        // Retornando el objeto String de la función base que ya tiene insertado el código de la función a remover
+        return newTextBody0;
+
+
+    }
     
     public static void main(String[] args) {
         OptimisationAnalysis op = new OptimisationAnalysis();
-        op.chechFunctionOptimizer(op.test);
+        Functions[] funciones =  op.chechFunctionOptimizer(op.test);
+//        System.out.println("imprimiendo lo siguiente");
+//        System.out.println(funciones[0].getBody());
+//        System.out.println("imprimiendo lo siguiente 1");
+//        System.out.println(funciones[2].getBody());
+//        funciones[0].
+        op.compactBody(funciones[0], funciones[2], funciones[1]);
     }
 }
