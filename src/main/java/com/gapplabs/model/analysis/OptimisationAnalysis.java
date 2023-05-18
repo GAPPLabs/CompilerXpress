@@ -58,8 +58,8 @@ public class OptimisationAnalysis {
         while (matcherFunction.find()) {
             Pattern patternCall = Pattern.compile(regexCallFunction);
             Matcher matcherCall = patternCall.matcher(matcherFunction.group());
-            Functions functionBase = decomposingFuction(matcherFunction, true);
             while(matcherCall.find()) {
+                Functions functionBase = decomposingFuction(matcherFunction, true);
                 Functions fuctionCall = decomposingFuction(matcherCall, false);
                 Functions functionRemove = searchFunction(text, fuctionCall.getIdentify());
                 return new Functions[] {functionBase, fuctionCall, functionRemove};
