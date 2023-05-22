@@ -14,40 +14,59 @@ public class OptimisationAnalysis {
     private final String regexFunction;
     private final String regexCallFunction;
 
-    private final String test = """
+    private String test = """
+           
             ent_ ISC111 , ISC112 , ISC113 ;
-            dec_ ISC211 ;
-            car_ ISC311 ;
+            ent_ ISC211 , ISC212 ;
                                             
-            ISC111 = ISC112 * ISC113 ; 
-            ISC211 = ISC112 ;
+            ISC211 = 0 ; 
+            ISC212 = 5 ;
                                             
-            ent_ ISC333 ( ent_ ISC914 )
+            ent_ ISC400 ( ent_ ISC914 , ent_ ISC915 )
             {
-            ISC914 = 5235 * ISC113 ;
-            return ISC914 ;
+            dec_ ISC311 ;
+            ISC311 = ISC211 % ISC212 ;
+            ISC111 = ISC914 + ISC915 ;
+            ISC311 = ISC111 + ISC311 ;
+            return ISC111 ;
             }
                                             
-            ent_ ISC334 ( ent_ ISC915 )
+            ent_ ISC500 ( ent_ ISC213 , ent_ ISC214 )
             {
-                                            
-            ISC915 = ISC333 ( ISC915 ) ;
-            return ISC915 ;
+            ISC112 = ISC400 ( ISC213 , ISC214 ) ;                                
+            return ISC112 ;
+            }
+                                
+            ent_ ISC600 ( ent_ ISC914 , ent_ ISC915 )
+            {
+            ISC111 = ISC914 + ISC915 ;
+            return ISC111 ;
+            }
+
+            ent_ ISC700 ( ent_ ISC213 , ent_ ISC214 )
+            {
+            ISC112 = ISC600 ( ISC213 , ISC214 ) ;                                
+            return ISC112 ;
+            }
+                          
+            ent_ ISC800 ( ent_ ISC914 , ent_ ISC915 )
+            {
+            ISC111 = ISC914 + ISC915 ;
+            return ISC111 ;
+            }
+
+            ent_ ISC900 ( ent_ ISC213 , ent_ ISC214 )
+            {
+            dec_ ISC311 ;
+            ISC311 = ISC211 % ISC212 ;
+            ISC112 = ISC800 ( ISC213 , ISC214 ) ;
+            ISC112 = ISC311 + ISC112;
+            return ISC112 ;
             }
                                             
-            ent_ ISC335 ( ent_ ISC914 )
-            {
-            ISC914 = 5235 * ISC113 ;
-            return ISC914 ;
-            }
-                                            
-            ent_ ISC336 ( ent_ ISC914 )
-            {
-            ISC914 = ISC335 ( ISC914 , ISC913 , ISC916 ) ;
-            return ISC914 ;
-            }
-                                            
-            ISC111 = ISC333 ( 555 ) ;
+            ISC113 = ISC500 ( ISC211 , ISC212 ) ;
+            ISC113 = ISC700 ( ISC211 , ISC212 ) ;
+            ISC113 = ISC900 ( ISC211 , ISC212 ) ;
             """;
 
     public OptimisationAnalysis() {
@@ -214,24 +233,62 @@ public class OptimisationAnalysis {
     public static void main(String[] args) {
         OptimisationAnalysis op = new OptimisationAnalysis();
         Functions[] funciones = op.chechFunctionOptimizer(op.test);
+        
+        while(funciones != null) {
+            String compactedBody = op.compactBody(funciones[0], funciones[2], funciones[1]);
+            // Método que elimina las variables transitivas. En casos extremos es necesario incrustarlo en una estructura de
+             // control de flujo iterativa
+            compactedBody = op.removeTransitiveVariables(compactedBody);
+
+            // Método para reemplazar el cuerpo obsoleto de la función base por el compactado
+             String finalCode = op.replacebody(funciones[0], compactedBody);
+
+             System.out.println("eliminando la primera función");
+             // Método para eliminar toda la primera función
+             finalCode = op.removeFunction(funciones[2], finalCode);
+             System.out.println(finalCode);
+
+             op.test = finalCode;
+             funciones = op.chechFunctionOptimizer(op.test);
+        }
+        
+        
+//        // Código que permite copiar y pegar el cuerpo de la función a remover a la función base
+//       String compactedBody = op.compactBody(funciones[0], funciones[2], funciones[1]);
+//       // Método que elimina las variables transitivas. En casos extremos es necesario incrustarlo en una estructura de
+//        // control de flujo iterativa
+//       compactedBody = op.removeTransitiveVariables(compactedBody);
+//
+//       // Método para reemplazar el cuerpo obsoleto de la función base por el compactado
+//        String finalCode = op.replacebody(funciones[0], compactedBody);
+//
+//        System.out.println("eliminando la primera función");
+//        // Método para eliminar toda la primera función
+//        finalCode = op.removeFunction(funciones[2], finalCode);
+//        System.out.println(finalCode);
+//        
+//        op.test = finalCode;
+//        
+//        funciones = op.chechFunctionOptimizer(op.test);
 //        System.out.println("imprimiendo lo siguiente");
 //        System.out.println(funciones[0].getBody());
 //        System.out.println("imprimiendo lo siguiente 1");
 //        System.out.println(funciones[2].getBody());
 //        funciones[0].
         // Código que permite copiar y pegar el cuerpo de la función a remover a la función base
-       String compactedBody = op.compactBody(funciones[0], funciones[2], funciones[1]);
-       // Método que elimina las variables transitivas. En casos extremos es necesario incrustarlo en una estructura de
-        // control de flujo iterativa
-       compactedBody = op.removeTransitiveVariables(compactedBody);
-
-       // Método para reemplazar el cuerpo obsoleto de la función base por el compactado
-        String finalCode = op.replacebody(funciones[0], compactedBody);
-
-        System.out.println("eliminando la primera función");
-        // Método para eliminar toda la primera función
-        finalCode = op.removeFunction(funciones[2], finalCode);
-        System.out.println(finalCode);
-
+//       compactedBody = op.compactBody(funciones[0], funciones[2], funciones[1]);
+//       // Método que elimina las variables transitivas. En casos extremos es necesario incrustarlo en una estructura de
+//        // control de flujo iterativa
+//       compactedBody = op.removeTransitiveVariables(compactedBody);
+//
+//       // Método para reemplazar el cuerpo obsoleto de la función base por el compactado
+//        finalCode = op.replacebody(funciones[0], compactedBody);
+//
+//        System.out.println("eliminando la primera función");
+//        // Método para eliminar toda la primera función
+//        finalCode = op.removeFunction(funciones[2], finalCode);
+//        System.out.println(finalCode);
+//        op.test = finalCode;
+//       
     }
 }
