@@ -66,36 +66,25 @@ public class OptimisationAnalysis2 {
             ISC113 = ISC500 ( ISC211 , ISC212 ) ;
             ISC113 = ISC700 ( ISC211 , ISC212 ) ;
             ISC113 = ISC900 ( ISC211 , ISC212 ) ;
+                          
             """;
-    
-    
-//    """                                
-//    ent_ ISC111 , ISC112 , ISC113 ;
-//    ent_ ISC211 , ISC212 ;
-//
-//    ISC211 = 0 ; 
-//    ISC212 = 5 ;
-//
-//    ent_ ISC400 ( ent_ ISC914 , ent_ ISC915 )
-//    {
-//    ISC111 = ISC914 + ISC915 ;
-//    return ISC111 ;
-//    }
-//
-//    ent_ ISC500 ( ent_ ISC213 , ent_ ISC214 )
-//    {
-//    ISC112 = ISC400 ( ISC213 , ISC214 ) ;                                
-//    return ISC112 ;
-//    }
-//
-//    ISC113 = ISC500 ( ISC211 , ISC212 ) ;
-//    """;
 
     public OptimisationAnalysis2() {
         this.regexFunction = "(ent_|dec_|car_)\\s*(ISC\\d{3})\\s*\\((.*?)\\)\\s*\\{((?s).*?)\\}";
         this.regexCallFunction = "\\s*(ISC\\d{3})\\s*\\((.*?)\\)\\s*;";
         this.regexReturnFunction = "(.*)\n\\s*(return ISC\\d{3} ;)";
         this.regexFirstCode = "(=\\s*)(.* ;)";
+    }
+    
+    public String compileOptimizer(String text) {
+        Functions2[] functions = chechFunctionOptimizer(text);
+        
+        while(functions != null) {
+            text = replaceText(functions, text, replaceBody(functions));
+            functions = chechFunctionOptimizer(text);
+        }
+        
+        return text;
     }
 
     private Functions2[] chechFunctionOptimizer(String text) {
@@ -194,13 +183,66 @@ public class OptimisationAnalysis2 {
         return text;
     }
     
-    public static void main(String[] args) {
-        OptimisationAnalysis2 op = new OptimisationAnalysis2();
-        Functions2[] functions = op.chechFunctionOptimizer(op.test);
-        
-        while(functions != null) {
-            op.test = op.replaceText(functions, op.test, op.replaceBody(functions));
-            functions = op.chechFunctionOptimizer(op.test);
-        }
-    }
+//    public static void main(String[] args) {
+//        OptimisationAnalysis2 op = new OptimisationAnalysis2();
+//        Functions2[] functions = op.chechFunctionOptimizer(op.test);
+//        
+//        while(functions != null) {
+//            op.test = op.replaceText(functions, op.test, op.replaceBody(functions));
+//            functions = op.chechFunctionOptimizer(op.test);
+//        }
+//    }
 }
+
+
+//ent_ ISC111 , ISC112 , ISC113 ;
+//ent_ ISC211 , ISC212 ;
+//
+//ISC211 = 0 ; 
+//ISC212 = 5 ;
+//
+//ent_ ISC400 ( ent_ ISC914 , ent_ ISC915 )
+//{
+//dec_ ISC311 ;
+//ISC311 = ISC211 % ISC212 ;
+//ISC111 = ISC914 + ISC915 ;
+//ISC311 = ISC111 + ISC311 ;
+//return ISC111 ;
+//}
+//
+//ent_ ISC500 ( ent_ ISC213 , ent_ ISC214 )
+//{
+//ISC112 = ISC400 ( ISC213 , ISC214 ) ;                                
+//return ISC112 ;
+//}
+//
+//ent_ ISC600 ( ent_ ISC914 , ent_ ISC915 )
+//{
+//ISC111 = ISC914 + ISC915 ;
+//return ISC111 ;
+//}
+//
+//ent_ ISC700 ( ent_ ISC213 , ent_ ISC214 )
+//{
+//ISC112 = ISC600 ( ISC213 , ISC214 ) ;                                
+//return ISC112 ;
+//}
+//
+//ent_ ISC800 ( ent_ ISC914 , ent_ ISC915 )
+//{
+//ISC111 = ISC914 + ISC915 ;
+//return ISC111 ;
+//}
+//
+//ent_ ISC900 ( ent_ ISC213 , ent_ ISC214 )
+//{
+//dec_ ISC311 ;
+//ISC311 = ISC211 % ISC212 ;
+//ISC112 = ISC800 ( ISC213 , ISC214 ) ;
+//ISC112 = ISC311 + ISC112;
+//return ISC112 ;
+//}
+//
+//ISC113 = ISC500 ( ISC211 , ISC212 ) ;
+//ISC113 = ISC700 ( ISC211 , ISC212 ) ;
+//ISC113 = ISC900 ( ISC211 , ISC212 ) ;
