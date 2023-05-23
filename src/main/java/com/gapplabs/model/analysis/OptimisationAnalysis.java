@@ -15,58 +15,28 @@ public class OptimisationAnalysis {
     private final String regexCallFunction;
 
     private String test = """
-           
+                       
             ent_ ISC111 , ISC112 , ISC113 ;
             ent_ ISC211 , ISC212 ;
                                             
             ISC211 = 0 ; 
             ISC212 = 5 ;
                                             
-            ent_ ISC400 ( ent_ ISC914 , ent_ ISC915 )
-            {
-            dec_ ISC311 ;
-            ISC311 = ISC211 % ISC212 ;
-            ISC111 = ISC914 + ISC915 ;
-            ISC311 = ISC111 + ISC311 ;
-            return ISC111 ;
-            }
-                                            
-            ent_ ISC500 ( ent_ ISC213 , ent_ ISC214 )
-            {
-            ISC112 = ISC400 ( ISC213 , ISC214 ) ;                                
-            return ISC112 ;
-            }
-                                
-            ent_ ISC600 ( ent_ ISC914 , ent_ ISC915 )
-            {
-            ISC111 = ISC914 + ISC915 ;
-            return ISC111 ;
-            }
-
-            ent_ ISC700 ( ent_ ISC213 , ent_ ISC214 )
-            {
-            ISC112 = ISC600 ( ISC213 , ISC214 ) ;                                
-            return ISC112 ;
-            }
-                          
-            ent_ ISC800 ( ent_ ISC914 , ent_ ISC915 )
-            {
-            ISC111 = ISC914 + ISC915 ;
-            return ISC111 ;
-            }
-
-            ent_ ISC900 ( ent_ ISC213 , ent_ ISC214 )
-            {
-            dec_ ISC311 ;
-            ISC311 = ISC211 % ISC212 ;
-            ISC112 = ISC800 ( ISC213 , ISC214 ) ;
-            ISC112 = ISC311 + ISC112;
-            return ISC112 ;
-            }
-                                            
-            ISC113 = ISC500 ( ISC211 , ISC212 ) ;
-            ISC113 = ISC700 ( ISC211 , ISC212 ) ;
-            ISC113 = ISC900 ( ISC211 , ISC212 ) ;
+                  ent_ ISC400 ( ent_ ISC914 , ent_ ISC915 )
+                                {
+                                dec_ ISC311 ;
+                                ISC311 = ISC211 % ISC212 ;
+                                ISC111 = ISC914 + ISC915 ;
+                                ISC311 = ISC111 + ISC311 ;
+                                return ISC111 ;
+                                }
+      
+                                ent_ ISC500 ( ent_ ISC213 , ent_ ISC214 )
+                                {
+                                ISC112 = ISC400 ( ISC213 , ISC214 ) ; 
+                                ISC110
+                                return ISC110 ;
+                                }
             """;
 
     public OptimisationAnalysis() {
@@ -200,7 +170,7 @@ public class OptimisationAnalysis {
                 // Seleccionando el código de la sentencia de origen de la variable transitiva
                 String originSequence = matcher.group();
                 // Extrayendo la operación núcleo. Se aumentan y reducen en 2 para eliminar el =,; y " "
-                String operation = originSequence.substring((originSequence.indexOf("=") + 2), (originSequence.indexOf(";") - 2));
+                String operation = originSequence.substring((originSequence.indexOf("=") + 2), (originSequence.indexOf(";") - 1));
                 // Para evitar problemas como "variable1 = variable1", se aumenta el " ;" para asegurar que se selecciona el
                 // valor (variable transitiva) y no la variable usada para asignar ese valor
                 lines[i] = lines[i].replace(redundantNameVariable + " ;", operation + " ;");
@@ -221,11 +191,11 @@ public class OptimisationAnalysis {
         return codigoFinal;
     }
 
-    public String removeFunction(Functions funcion2, String code){
-      return code.replace(funcion2.getMatcher().group(), "");
+    public String removeFunction(Functions funcion2, String code) {
+        return code.replace(funcion2.getMatcher().group(), "");
     }
 
-    public String replacebody(Functions funcion0, String compactedBody){
+    public String replacebody(Functions funcion0, String compactedBody) {
         System.out.println(test.replace(funcion0.getBody(), compactedBody + "\n"));
         return test.replace(funcion0.getBody(), compactedBody + "\n");
     }
@@ -233,26 +203,28 @@ public class OptimisationAnalysis {
     public static void main(String[] args) {
         OptimisationAnalysis op = new OptimisationAnalysis();
         Functions[] funciones = op.chechFunctionOptimizer(op.test);
-        
-        while(funciones != null) {
+
+        while (funciones != null) {
             String compactedBody = op.compactBody(funciones[0], funciones[2], funciones[1]);
             // Método que elimina las variables transitivas. En casos extremos es necesario incrustarlo en una estructura de
-             // control de flujo iterativa
+            // control de flujo iterativa
             compactedBody = op.removeTransitiveVariables(compactedBody);
 
             // Método para reemplazar el cuerpo obsoleto de la función base por el compactado
-             String finalCode = op.replacebody(funciones[0], compactedBody);
+            String finalCode = op.replacebody(funciones[0], compactedBody);
 
-             System.out.println("eliminando la primera función");
-             // Método para eliminar toda la primera función
-             finalCode = op.removeFunction(funciones[2], finalCode);
-             System.out.println(finalCode);
+            System.out.println("eliminando la primera función");
+            // Método para eliminar toda la primera función
+            finalCode = op.removeFunction(funciones[2], finalCode);
+//             System.out.println(finalCode);
 
-             op.test = finalCode;
-             funciones = op.chechFunctionOptimizer(op.test);
+            op.test = finalCode;
+            funciones = op.chechFunctionOptimizer(op.test);
         }
-        
-        
+        System.out.println("IMPRIMIENDO EL  CÓDIGO FINAL");
+        System.out.println(op.test);
+
+
 //        // Código que permite copiar y pegar el cuerpo de la función a remover a la función base
 //       String compactedBody = op.compactBody(funciones[0], funciones[2], funciones[1]);
 //       // Método que elimina las variables transitivas. En casos extremos es necesario incrustarlo en una estructura de
