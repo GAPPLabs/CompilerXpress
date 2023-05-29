@@ -216,3 +216,15 @@ public class OptimisationAnalysis2 {
 //ISC113 = ISC500 ( ISC211 , ISC212 ) ;
 //ISC113 = ISC700 ( ISC211 , ISC212 ) ;
 //ISC113 = ISC900 ( ISC211 , ISC212 ) ;
+
+
+//ent_ ISC400 ( ent_ ISC914 , ent_ ISC915 )
+//{
+//dec_ ISC311 ;
+//ISC311 = ISC211 % ISC212 ;
+//ISC111 = ISC914 + ISC915 ;
+//ISC311 = ISC111 + ISC311 ;
+//return ISC111 ;
+//}
+//
+//ISC113 = ISC400 ( ISC211 , ISC212 ) ;

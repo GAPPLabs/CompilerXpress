@@ -3,6 +3,7 @@ package com.gapplabs.controller;
 import com.gapplabs.model.analysis.WordAnalysis;
 import com.gapplabs.model.Compiler;
 import com.gapplabs.model.analysis.OptimisationAnalysis2;
+import com.gapplabs.model.dataStructure.Ensambler;
 import com.gapplabs.model.dataStructure.Errors;
 import com.gapplabs.model.dataStructure.Intermediates;
 import com.gapplabs.model.dataStructure.Simbols;
@@ -56,16 +57,22 @@ public class MainController implements ActionListener {
                     wordAnalysis.getErros().getStructure()));
             this.mainView.getTableTriplo().setModel(tool.getModelStructure(Intermediates.nameTable,
                     wordAnalysis.getIntermediates().getStructure()));
+            this.mainView.getTableAsm().setModel(tool.getModelStructure(Ensambler.nameTable,
+                    wordAnalysis.getEnsambler().getStructure()));
+            wordAnalysis.getIntermediates().transformBlockCode();
+            System.out.println("End");
         }
         if (e.getSource() == mainView.getExit()) System.exit(0);
         if (e.getSource() == mainView.getReset()) {
           this.mainView.getTableSimbols().setModel(new DefaultTableModel());
           this.mainView.getTableErrors().setModel(new DefaultTableModel());
           this.mainView.getTableTriplo().setModel(new DefaultTableModel());
+          this.mainView.getTableAsm().setModel(new DefaultTableModel());
         }
         if (e.getSource() == this.mainView.getOpen()) this.mainView.getTextArea().setText(tool.selectionFile());
         if (e.getSource() == this.mainView.getSave()) tool.saveFile(this.wordAnalysis.getIntermediates().transforIntermediate());
         if (e.getSource() == this.mainView.getToken()) tool.saveFile(this.wordAnalysis.getTokens().getTokesLine());
         if (e.getSource() == this.mainView.getOptimisation()) tool.saveFile(this.mainView.getTextAreaOptimizer().getText());
+        if (e.getSource() == this.mainView.getAsm()) tool.saveFile(this.wordAnalysis.getEnsambler().transforEnsambler());
     }
 }

@@ -60,13 +60,14 @@ public class IntermediateAnalysis {
     System.out.println("Intermediate");
     for (ArrayList<String> code : this.control) {
       System.out.println(Arrays.toString(code.toArray()));
-      initializationIntermediate(code);
+      initializationIntermediate(code, false);
       createFunctionIntermediate(code);
       keyIntermediate(code);
       returnFunctionIntermediate(code);
       callFunctionIntermediate(code);
     }
-    intermediates.registerIntermediate("", "", "", "fin de triplo");
+    
+    intermediates.registerIntermediate("", "", "", "Fin de triplo");
   }
 
   // Método para pseudocodigo de asignaciones:
@@ -325,7 +326,7 @@ public class IntermediateAnalysis {
   }
 
   // Registra las operaciones en el triplo
-  private void initializationIntermediate(ArrayList<String> codes) {
+  private void initializationIntermediate(ArrayList<String> codes, boolean function) {
     boolean correct = codes.get(0).equals("Asignacion");
     String assignment = codes.get(codes.size() - 1);
     boolean asignation = true;
@@ -336,7 +337,7 @@ public class IntermediateAnalysis {
 
     if (correct) {
       if (asignation) {
-        intermediates.registerIntermediate("T1", codes.get(1), "=", "Asignacion");
+        intermediates.registerIntermediate("T1", codes.get(1), "=", function ? "Asignacion funcion" : "Asignacion");
         intermediates.registerIntermediate(assignment, "T1", "=", "");
       } else {
         List<String> subCode = codes.subList(1, codes.size() - 1);
@@ -390,7 +391,7 @@ public class IntermediateAnalysis {
       for (int i = 2; i < codes.size(); i++) {
         if (codes.get(i).equals("Asignacion")) {
           List<String> subList = codes.subList(i, i + 3);
-          initializationIntermediate(new ArrayList<>(subList));
+          initializationIntermediate(new ArrayList<>(subList), false);
           i += 2;
         }
         if (codes.get(i).equals("return")) {
@@ -401,7 +402,7 @@ public class IntermediateAnalysis {
           ArrayList<String> subList = new ArrayList<>(Arrays.asList("Asignacion",
                   function.get(nameFunction).get(function.get(nameFunction).size() - 1),
                   codes.get(codes.size() - 1)));
-          initializationIntermediate(subList);
+          initializationIntermediate(subList, true);
           return;
         }
       }
@@ -457,6 +458,7 @@ public class IntermediateAnalysis {
 
   // Sistema aritmetico, funciona mas como un intermediaro.
   private void systemAritmetic(List<String> codes, String assignment) {
+    this.init = true;
     this.processAritmetic(codes);
     intermediates.registerIntermediate(assignment, "T" + this.temporaryCounter, "=", "");
     this.temporaryCounter = 0;

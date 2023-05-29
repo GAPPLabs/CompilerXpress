@@ -1,5 +1,6 @@
 package com.gapplabs.model.analysis;
 
+import com.gapplabs.model.dataStructure.Ensambler;
 import com.gapplabs.model.dataStructure.Errors;
 import com.gapplabs.model.dataStructure.Expressions;
 import com.gapplabs.model.dataStructure.Intermediates;
@@ -18,9 +19,11 @@ public class WordAnalysis {
   private Errors erros;
   private Tokens tokens;
   private Expressions expressions;
+  private Ensambler ensamblers;
   private Intermediates intermediates;
   private SemanticAnalysis semantic;
   private IntermediateAnalysis intermediate;
+  private EnsamblerAnalysis ensambler;
   private ArrayList<String[]> extractedWords = new ArrayList<>();
 
   public WordAnalysis() {
@@ -29,9 +32,11 @@ public class WordAnalysis {
     tokens = new Tokens();
     expressions = new Expressions();
     intermediates = new Intermediates();
-    this.extractedWords = new ArrayList<>();
+    ensamblers = new Ensambler();
+    extractedWords = new ArrayList<>();
     semantic = new SemanticAnalysis(simbols, erros);
     intermediate = new IntermediateAnalysis(simbols, erros, intermediates);
+    ensambler = new EnsamblerAnalysis(intermediates, ensamblers);
   }
 
   public void extractWords(String codeString) {
@@ -105,6 +110,10 @@ public class WordAnalysis {
   public Intermediates getIntermediates() {
     return intermediates;
   }
+  
+  public Ensambler getEnsambler() {
+    return ensamblers;
+  }
 
   public IntermediateAnalysis getIntermediate() {
     return intermediate;
@@ -124,6 +133,7 @@ public class WordAnalysis {
     tokens.clearData();
     expressions.clearData();
     intermediates.clearData();
+    ensamblers.clearData();
   }
 
   // This can be separated  in precompile and compile
@@ -137,6 +147,8 @@ public class WordAnalysis {
     this.intermediate.initData();
     this.intermediate.compile(extractedWords);
     this.intermediates.printData();
+    this.ensambler.compileEnsamblerCode();
+    this.ensamblers.printData();
   }
 
 //    public static void main(String[] args) {
