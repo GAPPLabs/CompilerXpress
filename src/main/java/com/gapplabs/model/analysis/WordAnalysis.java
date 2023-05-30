@@ -147,6 +147,7 @@ public class WordAnalysis {
     this.intermediate.initData();
     this.intermediate.compile(extractedWords);
     this.intermediates.printData();
+    this.ensambler.initData();
     this.ensambler.compileEnsamblerCode();
     this.ensamblers.printData();
   }

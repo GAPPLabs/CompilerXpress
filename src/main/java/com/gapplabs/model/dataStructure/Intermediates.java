@@ -12,7 +12,7 @@ import java.util.Map;
 public class Intermediates extends Common {
 
   private final static String[] nameData = {"renglon", "objeto", "fuente", "operador", "etiqueta"};
-  public final static String[] nameTable = {"renglon", "objeto", "fuente", "operador"};
+  public final static String[] nameTable = {"renglon", "objeto", "fuente", "operador", "etiqueta"};
 
   public Intermediates() {
     this.createData(nameData);

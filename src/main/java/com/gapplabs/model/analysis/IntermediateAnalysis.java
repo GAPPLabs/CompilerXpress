@@ -26,7 +26,7 @@ public class IntermediateAnalysis {
   private Map<String, List<String>> function;
   private Map<String, Map<String, Integer>> position;
   private String nameFunction;
-  // private ArrayList<Integer> position;
+  private boolean initFunction;
 
   // Almacen de jerarquia auxiliares:
   private int temporaryCounter;
@@ -43,6 +43,7 @@ public class IntermediateAnalysis {
     this.temporaryCounter = 0;
     this.init = false;
     this.nameFunction = null;
+    this.initFunction = false;
     this.control = new ArrayList<>();
     this.function = new HashMap<>();
     this.position = new HashMap<>();
@@ -60,7 +61,7 @@ public class IntermediateAnalysis {
     System.out.println("Intermediate");
     for (ArrayList<String> code : this.control) {
       System.out.println(Arrays.toString(code.toArray()));
-      initializationIntermediate(code, false);
+      initializationIntermediate(code, false, false, null);
       createFunctionIntermediate(code);
       keyIntermediate(code);
       returnFunctionIntermediate(code);
@@ -326,7 +327,7 @@ public class IntermediateAnalysis {
   }
 
   // Registra las operaciones en el triplo
-  private void initializationIntermediate(ArrayList<String> codes, boolean function) {
+  private void initializationIntermediate(ArrayList<String> codes, boolean function, boolean assing, String nameFunction) {
     boolean correct = codes.get(0).equals("Asignacion");
     String assignment = codes.get(codes.size() - 1);
     boolean asignation = true;
@@ -337,11 +338,17 @@ public class IntermediateAnalysis {
 
     if (correct) {
       if (asignation) {
-        intermediates.registerIntermediate("T1", codes.get(1), "=", function ? "Asignacion funcion" : "Asignacion");
+        String label = assing ? "Asignacion inicio " : "Asignacion funcion ";
+        label = initFunction ? "Asignacion key " : label;
+        intermediates.registerIntermediate("T1", codes.get(1), "=", function ? label + nameFunction : "Asignacion");
         intermediates.registerIntermediate(assignment, "T1", "=", "");
       } else {
         List<String> subCode = codes.subList(1, codes.size() - 1);
         systemAritmetic(subCode, assignment);
+      }
+      
+      if (initFunction) {
+        initFunction = false;
       }
     }
   }
@@ -371,12 +378,13 @@ public class IntermediateAnalysis {
     boolean correct = codes.get(0).equals("Limite");
     if (correct) {
       if (codes.get(1).equals("inicio")) {
-        intermediates.registerIntermediate("", "", "JMP", "Salto inicio funcion");
+        intermediates.registerIntermediate("", "", "JMP", "Salto inicio funcion " + this.nameFunction);
         position.get(this.nameFunction).put("inicio", intermediates.getSize());
+        initFunction = true;
       } else {
-        int index = intermediates.getLastIndexData("Salto inicio funcion", "etiqueta");
+        int index = intermediates.getLastIndexData("Salto inicio funcion " + this.nameFunction, "etiqueta");
         intermediates.updateData(intermediates.createMapData(new String[] {"fuente"}, String.valueOf(intermediates.getSize() + 2)), index);
-        intermediates.registerIntermediate("", "", "JMP", "Salto fin funcion");
+        intermediates.registerIntermediate("", "", "JMP", "Salto fin funcion " + this.nameFunction);
         position.get(this.nameFunction).put("fin", intermediates.getSize() - 1);
       }
     }
@@ -391,18 +399,18 @@ public class IntermediateAnalysis {
       for (int i = 2; i < codes.size(); i++) {
         if (codes.get(i).equals("Asignacion")) {
           List<String> subList = codes.subList(i, i + 3);
-          initializationIntermediate(new ArrayList<>(subList), false);
+          initializationIntermediate(new ArrayList<>(subList), true, true, nameFunction);
           i += 2;
         }
         if (codes.get(i).equals("return")) {
           intermediates.registerIntermediate("", intermediates.getData(position.get(nameFunction).get("inicio"), 
-                  "renglon"), "JMP", "Salto hacia la funcion");
+                  "renglon"), "JMP", "Salto hacia la funcion " + nameFunction);
           intermediates.updateData(intermediates.createMapData(new String[] {"fuente"}, String.valueOf(intermediates.getSize() + 1)),
                   position.get(nameFunction).get("fin"));
           ArrayList<String> subList = new ArrayList<>(Arrays.asList("Asignacion",
                   function.get(nameFunction).get(function.get(nameFunction).size() - 1),
                   codes.get(codes.size() - 1)));
-          initializationIntermediate(subList, true);
+          initializationIntermediate(subList, true, false, nameFunction);
           return;
         }
       }
@@ -412,13 +420,15 @@ public class IntermediateAnalysis {
   // Proceso aritmetico:
   private void processAritmetic(List<String> sentence) {
     boolean first = false;
+    
+    String label = initFunction ? "Aritmetica key " + this.nameFunction : "Aritmetica";
 
     for (int i = 1; i < sentence.size() - 1; i++) {
       if (sentence.get(i).equals("%") || sentence.get(i).equals("/") || sentence.get(i).equals("*")) {
         this.temporaryCounter++;
 
         if (this.init == true) {
-          intermediates.registerIntermediate("T" + this.temporaryCounter, sentence.get(i - 1), "=", "Aritmetica");
+          intermediates.registerIntermediate("T" + this.temporaryCounter, sentence.get(i - 1), "=", label);
           this.init = false;
         } else {
           intermediates.registerIntermediate("T" + this.temporaryCounter, sentence.get(i - 1), "=", "");
@@ -437,7 +447,7 @@ public class IntermediateAnalysis {
         if (first == false) {
           this.temporaryCounter++;
           if (this.init == true) {
-            intermediates.registerIntermediate("T" + this.temporaryCounter, sentence.get(i - 1), "=", "Aritmetica");
+            intermediates.registerIntermediate("T" + this.temporaryCounter, sentence.get(i - 1), "=", label);
             this.init = false;
           } else {
             intermediates.registerIntermediate("T" + this.temporaryCounter, sentence.get(i - 1), "=", "");
