@@ -61,6 +61,7 @@ public class EnsamblerAnalysis {
           boolean condition = codeData.get(index).get(0).get("etiqueta").contains("Salto");
           if (memory == null && !condition) memory = nameFunction;
           String jump = condition ? "ETI-" + (Integer.parseInt(index) + 1) : "ASIGNA_PARAMETROS_" + memory;
+          if (!condition) memory = null;
           memory = memory != null ? memory : condition ? nameFunction : null;
           this.ensambler.registerEnsambler("ETI-" + (Integer.parseInt(key) + 1), "JMP", jump, "");
         } else {
